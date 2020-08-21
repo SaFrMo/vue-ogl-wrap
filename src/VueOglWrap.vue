@@ -10,14 +10,20 @@
 <script>
 import FullCanvas from '@fuzzco/full-canvas'
 import get from 'lodash/get'
-// prettier-ignore
-import { Renderer, Camera, Orbit, Transform, Geometry, Vec3, Color, Polyline } from 'ogl'
+import {
+    defaultVertexCamera,
+    defaultVertexNoCamera,
+    defaultFragment
+} from './utils'
+import { Renderer, Program } from 'ogl'
 
 export default {
     props: {
         fragment: { type: String, default: '' },
         vertex: { type: String, default: '' },
-        renderer: { type: Object, default: () => {} }
+        renderer: { type: Object, default: () => {} },
+        uniforms: { type: Object, default: () => {} },
+        camera: { type: Boolean, default: false }
     },
     components: {
         'full-canvas': FullCanvas
@@ -34,16 +40,28 @@ export default {
             const fragmentVNode = get(this.$slots, 'default', []).find(
                 h => get(h, 'data.attrs.type', '') === 'x-shader/x-fragment'
             )
-            const fragment = get(fragmentVNode, 'elm.innerHTML', this.fragment)
+            const fragment =
+                get(fragmentVNode, 'elm.innerHTML', this.fragment) ||
+                defaultFragment
 
             // fetch user-defined vertex shader
             const vertexVNode = get(this.$slots, 'default', []).find(
                 h => get(h, 'data.attrs.type', '') === 'x-shader/x-vertex'
             )
-            const vertex = get(vertexVNode, 'elm.innerHTML', this.vertex)
+            const vertex =
+                get(vertexVNode, 'elm.innerHTML', this.vertex) || this.camera
+                    ? defaultVertexCamera
+                    : defaultVertexNoCamera
 
             // initialize ogl
             const renderer = new Renderer({ canvas, ...this.renderer })
+
+            // initialize program
+            const program = new Program(renderer.gl, {
+                vertex,
+                fragment,
+                uniforms: this.uniforms
+            })
 
             // ogl ready!
             this.$emit('ogl-ready', {
@@ -51,19 +69,31 @@ export default {
                 renderer,
                 fragment,
                 vertex,
+                program,
                 gl: renderer.gl
             })
 
-            this.update()
-        },
-        update(t) {
-            if (this && this.running) {
-                requestAnimationFrame(this.update)
-            }
-            const delta = t - this.lastTime
-            this.lastTime = t
+            const update = t => {
+                if (this && this.running) {
+                    requestAnimationFrame(update)
+                }
+                const delta = t - this.lastTime
+                this.lastTime = t
 
-            this.$emit('update', { time: t, delta })
+                this.$emit('update', {
+                    time: t,
+                    delta,
+                    canvas,
+                    renderer,
+                    fragment,
+                    vertex,
+                    program,
+                    gl: renderer.gl
+                })
+            }
+
+            // kick update loop
+            update()
         }
     },
     beforeDestroy() {
