@@ -24,7 +24,8 @@ export default {
     },
     data() {
         return {
-            running: true
+            running: true,
+            lastTime: 0
         }
     },
     methods: {
@@ -55,11 +56,14 @@ export default {
 
             this.update()
         },
-        update(t = 0) {
+        update(t) {
             if (this && this.running) {
                 requestAnimationFrame(this.update)
             }
-            this.$emit('update', t)
+            const delta = t - this.lastTime
+            this.lastTime = t
+
+            this.$emit('update', { time: t, delta })
         }
     },
     beforeDestroy() {

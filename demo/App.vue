@@ -1,7 +1,11 @@
 <template>
     <main class="vue-ogl-wrap-demo">
         <div class="wrapper">
-            <vue-ogl-wrap @ogl-ready="init" @update="update">
+            <!--  -->
+            <!-- <vue-ogl-wrap @ogl-ready="initExample1" @update="updateExample1"> -->
+
+            <!-- Basic example -->
+            <vue-ogl-wrap @ogl-ready="initExample1" @update="updateExample1">
                 <script type="x-shader/x-fragment">
                     precision highp float;
                     uniform float uTime;
@@ -43,11 +47,12 @@ export default {
         }
     },
     methods: {
-        init({ canvas, renderer, fragment, vertex, gl }) {
-            ogl.renderer = renderer
+        // example 1
+        initExample1({ canvas, renderer, fragment, vertex, gl }) {
+            ogl.renderer1 = renderer
             const geometry = new Triangle(gl)
 
-            ogl.program = new Program(gl, {
+            ogl.program1 = new Program(gl, {
                 vertex,
                 fragment,
                 uniforms: {
@@ -55,13 +60,11 @@ export default {
                     uColor: { value: new Color(0.3, 0.2, 0.5) }
                 }
             })
-            ogl.mesh = new Mesh(gl, { geometry, program: ogl.program })
+            ogl.mesh1 = new Mesh(gl, { geometry, program: ogl.program1 })
         },
-        update(t) {
-            ogl.program.uniforms.uTime.value = t * 0.001
-
-            // Don't need a camera if camera uniforms aren't required
-            ogl.renderer.render({ scene: ogl.mesh })
+        updateExample1({ time }) {
+            ogl.program1.uniforms.uTime.value = time * 0.001
+            ogl.renderer1.render({ scene: ogl.mesh1 })
         }
     }
 }
