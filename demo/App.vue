@@ -1,7 +1,7 @@
 <template>
     <main class="vue-ogl-wrap-demo">
         <div class="wrapper">
-            <vue-ogl-wrap @ogl-ready="init">
+            <vue-ogl-wrap @ogl-ready="init" @update="update">
                 <script type="x-shader/x-fragment">
                     precision highp float;
                     uniform float uTime;
@@ -31,17 +31,23 @@
 import VueOglWrap from '../src/VueOglWrap'
 import { Triangle, Program, Mesh, Color } from 'ogl'
 
+const ogl = {}
+
 export default {
     components: {
         'vue-ogl-wrap': VueOglWrap
     },
+    data() {
+        return {
+            program: null
+        }
+    },
     methods: {
-        init({ canvas, renderer, fragment, vertex }) {
-            const gl = renderer.gl
-
+        init({ canvas, renderer, fragment, vertex, gl }) {
+            ogl.renderer = renderer
             const geometry = new Triangle(gl)
 
-            const program = new Program(gl, {
+            ogl.program = new Program(gl, {
                 vertex,
                 fragment,
                 uniforms: {
@@ -49,17 +55,13 @@ export default {
                     uColor: { value: new Color(0.3, 0.2, 0.5) }
                 }
             })
-            const mesh = new Mesh(gl, { geometry, program })
+            ogl.mesh = new Mesh(gl, { geometry, program: ogl.program })
+        },
+        update(t) {
+            ogl.program.uniforms.uTime.value = t * 0.001
 
-            requestAnimationFrame(update)
-            function update(t) {
-                requestAnimationFrame(update)
-
-                program.uniforms.uTime.value = t * 0.001
-
-                // Don't need a camera if camera uniforms aren't required
-                renderer.render({ scene: mesh })
-            }
+            // Don't need a camera if camera uniforms aren't required
+            ogl.renderer.render({ scene: ogl.mesh })
         }
     }
 }

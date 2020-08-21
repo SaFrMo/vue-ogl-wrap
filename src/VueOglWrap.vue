@@ -16,10 +16,16 @@ import { Renderer, Camera, Orbit, Transform, Geometry, Vec3, Color, Polyline } f
 export default {
     props: {
         fragment: { type: String, default: '' },
-        vertex: { type: String, default: '' }
+        vertex: { type: String, default: '' },
+        renderer: { type: Object, default: () => {} }
     },
     components: {
         'full-canvas': FullCanvas
+    },
+    data() {
+        return {
+            running: true
+        }
     },
     methods: {
         initCanvas(canvas) {
@@ -36,10 +42,28 @@ export default {
             const vertex = get(vertexVNode, 'elm.innerHTML', this.vertex)
 
             // initialize ogl
-            const renderer = new Renderer({ canvas })
+            const renderer = new Renderer({ canvas, ...this.renderer })
 
-            this.$emit('ogl-ready', { canvas, renderer, fragment, vertex })
+            // ogl ready!
+            this.$emit('ogl-ready', {
+                canvas,
+                renderer,
+                fragment,
+                vertex,
+                gl: renderer.gl
+            })
+
+            this.update()
+        },
+        update(t = 0) {
+            if (this && this.running) {
+                requestAnimationFrame(this.update)
+            }
+            this.$emit('update', t)
         }
+    },
+    beforeDestroy() {
+        this.running = false
     }
 }
 </script>
