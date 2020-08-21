@@ -7,7 +7,6 @@
                 @update="updateExample2"
                 :renderer="{ width: 400, height: 400 }"
                 :program-options="{ cullFace: null }"
-                use-camera
             >
                 <script type="x-shader/x-fragment">
                     precision highp float;
@@ -28,6 +27,7 @@
             <vue-ogl-wrap
                 @ogl-ready="initExample1"
                 :renderer="{ width: 400, height: 400 }"
+                :use-camera="false"
             />
         </div>
     </main>
@@ -95,9 +95,9 @@ export default {
 
             renderer.render({ scene, camera: ogl.camera })
         },
-        updateExample2({ renderer, scene }) {
+        updateExample2({ renderer, scene, delta }) {
             scene.children.forEach((child, i) => {
-                child.rotation.y -= 0.01 * (i + 1)
+                child.rotation.y -= Math.PI * delta
             })
 
             renderer.render({ scene, camera: ogl.camera })

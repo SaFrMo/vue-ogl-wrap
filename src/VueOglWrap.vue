@@ -23,7 +23,7 @@ export default {
         vertex: { type: String, default: '' },
         renderer: { type: Object, default: () => {} },
         uniforms: { type: Object, default: () => {} },
-        useCamera: { type: Boolean, default: false },
+        useCamera: { type: Boolean, default: true },
         programOptions: { type: Object, default: () => {} }
     },
     components: {
@@ -83,6 +83,7 @@ export default {
                 gl: renderer.gl
             })
 
+            // prep update function
             const update = t => {
                 if (this && this.running) {
                     requestAnimationFrame(update)
@@ -92,7 +93,7 @@ export default {
 
                 this.$emit('update', {
                     time: t,
-                    delta,
+                    delta: delta / 1000 || 0,
                     canvas,
                     renderer,
                     fragment,
