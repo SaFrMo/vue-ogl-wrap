@@ -1,7 +1,7 @@
 export const defaultVertexCamera = `
     precision highp float;
     precision highp int;
-
+    
     attribute vec3 position;
     attribute vec3 normal;
 

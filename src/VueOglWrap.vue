@@ -15,7 +15,7 @@ import {
     defaultVertexNoCamera,
     defaultFragment
 } from './utils'
-import { Renderer, Program } from 'ogl'
+import { Renderer, Program, Transform } from 'ogl'
 
 export default {
     props: {
@@ -23,7 +23,8 @@ export default {
         vertex: { type: String, default: '' },
         renderer: { type: Object, default: () => {} },
         uniforms: { type: Object, default: () => {} },
-        camera: { type: Boolean, default: false }
+        useCamera: { type: Boolean, default: false },
+        programOptions: { type: Object, default: () => {} }
     },
     components: {
         'full-canvas': FullCanvas
@@ -49,7 +50,7 @@ export default {
                 h => get(h, 'data.attrs.type', '') === 'x-shader/x-vertex'
             )
             const vertex =
-                get(vertexVNode, 'elm.innerHTML', this.vertex) || this.camera
+                get(vertexVNode, 'elm.innerHTML', this.vertex) || this.useCamera
                     ? defaultVertexCamera
                     : defaultVertexNoCamera
 
@@ -60,11 +61,15 @@ export default {
                 ...this.renderer
             })
 
+            // create scene
+            const scene = new Transform()
+
             // initialize program
             const program = new Program(renderer.gl, {
                 vertex,
                 fragment,
-                uniforms: this.uniforms
+                uniforms: this.uniforms,
+                ...this.programOptions
             })
 
             // ogl ready!
@@ -74,6 +79,7 @@ export default {
                 fragment,
                 vertex,
                 program,
+                scene,
                 gl: renderer.gl
             })
 
@@ -92,6 +98,7 @@ export default {
                     fragment,
                     vertex,
                     program,
+                    scene,
                     gl: renderer.gl
                 })
             }
