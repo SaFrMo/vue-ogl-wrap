@@ -30,6 +30,7 @@
     "dependencies": {
         "@fuzzco/full-canvas": "1.1.0",
         "lodash": "4.17.20",
+        "ogl": "0.0.60",
         "vue": "^2.6.10"
     },
     "bugs": {
