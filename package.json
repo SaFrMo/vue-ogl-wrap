@@ -1,0 +1,39 @@
+{
+    "name": "vue-ogl-wrap",
+    "version": "1.0.0",
+    "description": "Wrapper for OGL library.",
+    "main": "dist/vue-ogl-wrap.common.js",
+    "scripts": {
+        "dev": "vue-cli-service serve demo/main",
+        "prepublish": "npm run build",
+        "buildDemo": "vue-cli-service build --dest docs demo/main",
+        "buildLib": "vue-cli-service build --target lib --name vue-ogl-wrap src/VueOglWrap.vue",
+        "build": "npm run buildDemo && npm run buildLib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SaFrMo/vue-ogl-wrap.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.4",
+        "@babel/preset-env": "^7.4.4",
+        "@vue/cli-service": "^3.7.0",
+        "node-sass": "4.14.1",
+        "sass-loader": "^7.1.0",
+        "terser": "^3.17.0",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "dependencies": {
+        "@fuzzco/full-canvas": "1.1.0",
+        "lodash": "4.17.20",
+        "vue": "^2.6.10"
+    },
+    "bugs": {
+        "url": "https://github.com/SaFrMo/vue-ogl-wrap/issues"
+    },
+    "homepage": "https://github.com/SaFrMo/vue-ogl-wrap#readme"
+}
