@@ -27,9 +27,8 @@ export const defaultVertexNoCamera = `
 
 export const defaultFragment = `
     precision highp float;
-    precision highp int;
-    varying vec2 vUv;
 
+    varying vec2 vUv;
     void main() {
         gl_FragColor.rgb = vec3(vUv.x, vUv.y, 0.);
         gl_FragColor.a = 1.0;

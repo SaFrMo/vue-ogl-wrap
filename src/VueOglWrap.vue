@@ -54,7 +54,11 @@ export default {
                     : defaultVertexNoCamera
 
             // initialize ogl
-            const renderer = new Renderer({ canvas, ...this.renderer })
+            const renderer = new Renderer({
+                canvas,
+                dpr: window.devicePixelRatio,
+                ...this.renderer
+            })
 
             // initialize program
             const program = new Program(renderer.gl, {
